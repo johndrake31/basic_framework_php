@@ -2,36 +2,15 @@
 
 namespace Model;
 
+use PDO;
 
-/**
- * used for any SQL method(){} or $variable that are needed 
- * and can be
- * simplified for all classes
- */
 abstract class Model
 {
 
     protected $pdo;
-
-    /**  
-     * Table is a variable used in the individual class
-     * to define the sql table to 
-     * send and recieve data from.
-     */
     protected $table;
     function __construct()
     {
-        /**
-         * static function getPdo()
-         * Creates a PDO instance representing 
-         * a connection to a database.
-         * since the function is static we 
-         * can call is similiar to $GLOBALS
-         * but with Class object syntax 
-         * \CLASSNAME
-         * :: method 
-         * name
-         */
         $this->pdo = \Database::getPdo();
     }
 
@@ -44,13 +23,13 @@ abstract class Model
      * @param integer $id
      * @return array|bool
      */
-    public function find(int $id)
+    public function find(int $id, $className)
     {
         $maRequete = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id =:id");
 
         $maRequete->execute(['id' => $id]);
 
-        $item = $maRequete->fetch();
+        $item = $maRequete->fetchObject($className);
 
         return $item;
     }
@@ -60,13 +39,12 @@ abstract class Model
      * 
      * @return array
      */
-    public function findAll(): array
+    public function findAll(string $className): array
     {
         $resultat =  $this->pdo->query("SELECT * FROM {$this->table}");
-        $item = $resultat->fetchAll();
+        $item = $resultat->fetchAll(PDO::FETCH_CLASS, $className);
         return $item;
     }
-
 
 
     /**

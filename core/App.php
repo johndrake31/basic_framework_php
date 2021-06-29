@@ -9,7 +9,7 @@ class App
         /**
          * can be predefined after it is set by $_GET
          */
-        $controllerName = "myController";
+        $controllerName = "velo";
         $task = "index";
 
         if (!empty($_GET['controller'])) {
